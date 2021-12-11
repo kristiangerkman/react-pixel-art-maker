@@ -1,0 +1,143 @@
+:root {
+  --main-color: #645b3e;
+  --secondary-color: #063d43;
+  --main-text-color: #000;
+  --second-text-color: #fff;
+  --highlight: #e81e63;
+}
+
+input {
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.cell-num {
+  font-size: 10px;
+  line-height: 7px;
+  max-height: 7px;
+  margin: 0;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: var(--main-color);
+  min-height: 5vh;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  padding: 20px;
+    margin-bottom: 25px;
+
+}
+
+.App-Content {
+  display: flex;
+  flex-direction: row;
+  color: var(--main-text-color);
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+
+.line {
+   left: 10px;
+   margin: 4px auto;
+   height: 3px;
+   width: 20px;
+   background: #fff;
+   border-radius: 2px;
+   display: block;
+}
+
+
+.Canvas {
+  min-width: 60%;
+  max-width: 100%;
+  text-align: center;
+  font-size: calc(10px + 1vmin);
+}
+
+.Canvas.full-width {
+  min-width: unset;
+  width: 100%;
+  margin: 0 50px;
+}
+
+.circle-picker {
+  margin: 0 auto !important;
+}
+
+.Separator {
+  max-width: 90%;
+  margin: 20px auto;
+  border-color: var(--main-color);
+}
+
+table {
+  border-spacing: 0;
+}
+
+td, tr {
+  width: 20px;
+  height: 20px;
+  max-width: 20px;
+  max-height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  border: 1px solid #282c34;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.no-border {
+  border: none;
+}
+
+/* MOBILE STYLES */
+@media screen and (max-width: 600px) {
+  .App-header {
+    z-index: 2;
+    position: relative;
+    margin-bottom: 25px;
+  }
+
+  .App-Content {
+    flex-direction: column;
+  }
+
+  .App-Settings,
+  .Canvas {
+    width: 100%;
+    padding: 0;
+  }
+
+  .Canvas {
+    text-align: center;
+  }
+
+  .Canvas.full-width {
+    margin: 0;
+  }
+
+}
