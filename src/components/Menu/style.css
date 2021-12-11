@@ -1,0 +1,113 @@
+.App-Settings {
+	width: 100%;
+	font-size: calc(10px + 1vmin);
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	/* border-right: 1px solid var(--main-color); */
+}
+
+#sizePicker {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+}
+
+.form-buttons {
+	padding-bottom: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content:space-around;
+	margin-right: 15px;
+}
+
+input {
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+}
+
+.utility-button {
+	background-color: var(--secondary-color);
+}
+
+label {
+  padding-left: 15px;
+  max-height: 44px;
+  border-radius: 5px;
+  border-bottom: 2px solid black;
+  color: #000;
+  color: var(--second-text-color);
+  background-color: var(--secondary-color);
+}
+
+#input_height,
+#input_width {
+	padding: 10px 15px;
+	border-radius: 5px;
+	border: none;
+	max-width: 50px;
+	max-height: 44px;
+	margin: 5px 15px;
+	margin-right: 2px;
+	font-size: 0.8em;
+	color: var(--second-text-color);
+	background-color: var(--secondary-color);
+}
+
+.input_submit {
+	padding: 10px 15px;
+	border-radius: 5px;
+	border: none;
+	font-size: 0.9em;
+	background-color: var(--secondary-color);
+	color: var(--second-text-color);
+	border-bottom: 2px solid black;
+}
+
+.input_submit:hover {
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.colorPicker-cell {
+	max-height: 50px;
+	max-width: 50px;
+	height: 50px;
+	width: 50px;
+	margin-right: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid black;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.color-edit {
+	border: 1px solid red;
+}
+
+.color-edit-selected {
+	border: 2px solid black;
+}
+
+.colorPicker-cell p {
+	color: black;
+}
+
+.colorPicker-row {
+	display: flex;
+	flex-direction: row;
+	margin-left: 25px;
+}
+
+.color-selected {
+	border: 2px solid rgb(255, 11, 226);
+
+}
+
+.sketch {
+	position: absolute;
+	margin-top: 10px;
+}

@@ -1,20 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faAngleLeft, faAngleRight, faArrowsAltH, faArrowsAltV } from '@fortawesome/free-solid-svg-icons';
 import Menu from './components/Menu';
 
-library.add(faAngleLeft, faAngleRight, faArrowsAltH, faArrowsAltV);
-
 const App = (props) => {
+    window.addEventListener('beforeunload', () => {
+      window.confirm()
+    })
 
-    const [height, setHeight] = useState(15)
-    const [width, setWidth] = useState(15)
+    const [height, setHeight] = useState(40)
+    const [width, setWidth] = useState(78)
     const [background, setBackground] = useState('#fff')
-    const [cellColor, setCellColor] = useState('#f44336')
+    const [cellColor, setCellColor] = useState({color: '#f44336', id: 1})
     const [mouseDown, setMouseDown] = useState(false)
     const [menuVisible, setMenuVisible] = useState(true)
-    const [colors, setColors] = useState({ '#f44336': 1 })
+    const [backgroundImage, setBackgroundImage] = useState('')
+    const [colors, setColors] = useState([
+				{ color: '#009688', id: 1 },
+				{ color: '#fff', id: 2 },
+				{ color: '#fff', id: 3 },
+				{ color: '#fff', id: 4 },
+				{ color: '#fff', id: 5 },
+				{ color: '#fff', id: 6 },
+				{ color: '#fff', id: 7 },
+				{ color: '#fff', id: 8 },
+				{ color: '#fff', id: 9 },
+			])
+
+      useEffect(() => {
+        handleSubmit();
+      }, [])
+
+      useEffect(() => {
+    window.addEventListener("beforeunload", alertUser);
+    return () => {
+      window.removeEventListener("beforeunload", alertUser);
+    };
+  }, [window.performance]);
+  const alertUser = (e) => {
+    e.preventDefault();
+    e.returnValue = "";
+  };
 
   const handleChange = (event) => {
     const target = event.target;
@@ -33,18 +58,51 @@ const App = (props) => {
     }
   }
   
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    if (window.confirm('This will override the previous save, are you sure you want to save?')) {
+      const canvas = document.querySelector("#pixel_canvas");
+      console.log(canvas.innerHTML);
+
+      localStorage.setItem('savedCanvas', canvas.innerHTML);
+    }
+  }
+
+  const handleLoadCanvas = (e) => {
+    e.preventDefault();
+    if (window.confirm('This will load previously saved canvas and remove all unsaved data, are you sure you want to continue?')) {
+      const canvas = document.querySelector("#pixel_canvas");
+      const storedCanvas = localStorage.getItem('savedCanvas');
+      if(storedCanvas) {
+        canvas.innerHTML = '';
+        canvas.innerHTML += storedCanvas;
+      }
+    }
+  }
+  
+  const handlePrint = (e) => {
+    e.preventDefault();
+    const canvas = document.querySelector("#pixel_canvas");
+
+    localStorage.setItem('printableCanvas', canvas.innerHTML);
+    window.open("/print.html", "_blank")
+  }
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    if (event) event.preventDefault();
 
     const canvas = document.querySelector("#pixel_canvas");
+    if (event && !window.confirm('This will create new canvas and will remove all unsaved data, are you sure you want to continue?')) {
+      return
+    }
     canvas.innerHTML = '';
     setBackground('#fff');
-    setCellColor('#f44336')
-    setColors({ '#f44336': 1 })
+    setCellColor({ color: '#009688', id: 1 })
 
     for (let x = 0; x < height; x++) {
       let row = document.createElement("tr");
+      row.innerHTML += `<td class='no-border'><span class='cell-num'>${x + 1}</span></td>`
       canvas.appendChild(row);
 
       for (let y = 0; y < width; y++) {
@@ -53,22 +111,45 @@ const App = (props) => {
         row.appendChild(cell);
       }
     }
+    let numRow = document.createElement("tr");
+    canvas.appendChild(numRow);
+    let placeholderCell = document.createElement("td");
+    placeholderCell.classList.add('no-border')
+
+    numRow.appendChild(placeholderCell);
+
+    for (let y = 0; y < width; y++) {
+      let cell = document.createElement("td");
+      cell.classList.add('no-border')
+      cell.innerHTML = `<span class='cell-num'>${y + 1}</span>`
+      cell.id = `cell-${y + 1}-${y}`
+      numRow.appendChild(cell);
+    }
   }
 
   // Cell color
   const handleCellColor = (color) => {
-    setCellColor(color.hex);
-    if (!colors[color.hex]) {
+    setCellColor(color);
+/*     if (!colors[color.hex]) {
       const tmpColors = { ...colors };
       tmpColors[color.hex] = Object.keys(colors).length + 1
       setColors(tmpColors);
-    }
+    } */
   }
 
   const handleCellColorOnClick = (event) => {
-    event.target.style.backgroundColor = cellColor;
-    if (document.getElementById(event.target.id)) {
-      document.getElementById(event.target.id).innerHTML = `<p class='cell-num noselect'>${colors[cellColor]}</p>`;
+    let idToBeUpdated = event.target.id;
+    
+    // TODO; Figure out how to make this but faster
+    /*
+    let bool = false;
+    if (idToBeUpdated[0] === ('p')) {
+      idToBeUpdated = event.target.parentNode.id;
+      bool = true;
+    } */
+    if ((document.getElementById(idToBeUpdated) && String(idToBeUpdated).startsWith('cell'))) {
+      document.getElementById(idToBeUpdated).style.backgroundColor = cellColor.color;
+      document.getElementById(idToBeUpdated).innerHTML = `<p id='ph-${idToBeUpdated}' class='cell-num noselect'>${colors[cellColor.id-1].id}</p>`;
     }
       setMouseDown(true);
   }
@@ -77,14 +158,35 @@ const App = (props) => {
     setMouseDown(false);
   }
 
-  // Table background color
-  const handleBackgroundColor = (color) => {
-    setBackground(color.hex);
-  };
 
+  const handleBackgroundImage = (e) => {
+    e.preventDefault();
+
+    if (window.FileReader) {
+      const file = e.target.files[0];
+      console.log(file);
+      const reader = new FileReader();
+
+      reader.onload = (ev) => {
+          setBackgroundImage(ev.target.result)
+          console.log(backgroundImage)
+      }
+      reader.readAsDataURL(file); 
+    } else {
+      window.alert('file reading not supported')
+    }
+  }
   // Remove color
   const handleColorRemove = (event) => {
-    event.target.style.backgroundColor = '';
+    let idToBeUpdated = event.target.id;
+
+    console.log(idToBeUpdated[0])
+    if (idToBeUpdated[0] === ('p')) {
+      idToBeUpdated = event.target.parentNode.id;
+    }
+
+    document.getElementById(idToBeUpdated).style.backgroundColor = '';
+    document.getElementById(idToBeUpdated).innerHTML = '';
   }
 
   const handleMenuVisible = () => {
@@ -92,33 +194,35 @@ const App = (props) => {
   }
 
   // TODO: Separate into single components
-
   return (
     <div className="App">
 
       <header className="App-header">
-        <h1>Pixel Art Maker</h1>
+        <Menu
+          handleLoadCanvas={handleLoadCanvas}
+          handlePrint={handlePrint}
+          handleSave={handleSave}
+          colors={colors}
+          setColors={setColors}
+          height={height}
+          width={width}
+          cellColor={cellColor}
+          menuVisible={menuVisible}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          handleBackgroundImage={handleBackgroundImage}
+          handleCellColor={handleCellColor}
+          handleMenuVisible={handleMenuVisible}
+        />
       </header>
 
       <div className="App-Content">
-        <Menu 
-        height={height}
-        width={width}
-        backgroundColor={background}
-        cellColor={cellColor}
-        menuVisible={menuVisible}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        handleBackgroundColor={handleBackgroundColor}
-        handleCellColor={handleCellColor}
-        handleMenuVisible={handleMenuVisible}
-        />
+
 
         <div className={menuVisible ? "Canvas" : "Canvas full-width"}>
-          <h2>Design Canvas</h2>
           <table
             id="pixel_canvas"
-            style={{backgroundColor: background}}
+            style={{backgroundColor: background, backgroundImage: `url(${backgroundImage})`}}
             onMouseDown={handleCellColorOnClick}
             onMouseMove={mouseDown ? handleCellColorOnClick : null}
             onMouseUp={handleMouseState}

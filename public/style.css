@@ -90,10 +90,6 @@ appearance: none;
 
 table {
   border-spacing: 0;
-  background-repeat: no-repeat;
-  background-size: auto 90%;
-  background-position-x: 2.3em;
-  background-position-y: 1em;
 }
 
 td, tr {
